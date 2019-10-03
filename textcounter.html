@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Text Counter</title>
+		<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta http-equiv="X-UA-Compatible" content="ie=edge">
+		<style>
+			:root {
+				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+			}
+
+			.container {
+				position: absolute;
+				text-align: left;
+				top: 50%;
+				left: 50%;
+				width: 90%;
+				height: 90%;
+				transform: translate(-50%, -50%);
+			}
+
+			.textarea {
+				position: relative;
+				left: 50%;
+				width: 70%;
+				height: 80%;
+				transform: translateX(-50%);
+				border: 2px solid black;
+				border-radius: 10px;
+			}
+
+			.textarea textarea {
+				position: relative;
+				left: 50%;
+				top: 50%;
+				transform: translate(-50%, -50%);
+				width: 95%;
+				height: 93%;
+				resize: none;
+				border: none;
+				font-size: 20px;
+			}
+
+			h2 {
+				position: relative;
+				left: 15%;
+				display: block;
+				width: 70%;
+			}
+
+			#downloadfile{
+				text-decoration: none;
+				color: dodgerblue;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container">
+			<div class="textarea">
+				<textarea id="text"></textarea>
+			</div>
+			<h2>文字数：<span id="countonlystr">0</span></h2>
+			<h2>文字数(改行含む)：<span id="countwithbr">0</span></h2>
+			<h2><a href="javascript:void(0)" id="downloadfile" download>ダウンロード</a></h2>
+		</div>
+		<script>
+			const text = document.getElementById("text"),
+				cos = document.getElementById("countonlystr"),
+				cwb = document.getElementById("countwithbr");
+			text.oninput = () => counter();
+			const counter = () => {
+				const texts = [...text.value];
+				cos.textContent = texts.length - texts.filter(x => x.match(/\n|\r\n|\r/)).length;
+				cwb.textContent = texts.length;
+			}
+			window.onbeforeunload = () => localStorage.setItem("val", text.value);
+			window.onload = () => {
+				if (localStorage.getItem("val")) {
+					text.value = localStorage.getItem("val");
+					counter();
+				}
+			}
+			downloadfile.download = "text.txt";
+			downloadfile.onclick = () => {
+				downloadfile.charset = 'utf-8';
+				downloadfile.href = `data:text,${encodeURIComponent(text.value)}`;
+			}
+		</script>
+	</body>
+</html>
